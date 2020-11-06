@@ -4,8 +4,8 @@
 // since ESP32 does not have the Arduino built-in library, this is a fork found on GitHub
 #include <ESP32Servo.h> 
 
-// WiFi details stored in .h file
-#include <wifi_config.h>
+// WiFi details and backend API endpoint stored in .h file
+#include <build_config.h>
 
 Servo doorServo;
 
