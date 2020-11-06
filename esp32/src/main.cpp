@@ -1,13 +1,18 @@
 #include <Arduino.h>
 #include <WiFi.h>
+#include <ArduinoJson.h>
 
 // since ESP32 does not have the Arduino built-in library, this is a fork found on GitHub
 #include <ESP32Servo.h> 
+
+// get data
+#include <Api.h>
 
 // WiFi details and backend API endpoint stored in .h file
 #include <build_config.h>
 
 Servo doorServo;
+Api api;
 
 const long pin_servo_control = GPIO_NUM_18; // GPIO to servo PWM 
 
@@ -67,10 +72,8 @@ void unlock() {
 }
 
 void loop() {
-  lock();
-  delay(1000);
-  unlock();
-  delay(1000);
+  String response = api.update();
+
 	// for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
 	// 	// in steps of 1 degree
 	// 	doorServo.write(pos);    // tell servo to go to position in variable 'pos'

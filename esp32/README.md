@@ -11,5 +11,5 @@ Put the following contents in the file, modify the values of the constants.
 ```c
 const char *wifi_ssid = "Your WiFi SSID here";
 const char *wifi_password = "Your WiFi Password here";
-const char *backend_endpoint = "http://10.0.4.102:5000/api/servo";
+const char *backend_endpoint = "http://10.0.4.102:5000/api/lock";
 ```
