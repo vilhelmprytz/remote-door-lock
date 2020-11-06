@@ -12,7 +12,7 @@ Servo doorServo;
 const long pin_servo_control = GPIO_NUM_18; // GPIO to servo PWM 
 
 // This is the default ADC max value on the ESP32 (12 bit ADC width);
-// this width can be set (in low-level oode) from 9-12 bits, for a
+// this width can be set (in low-level mode) from 9-12 bits, for a
 // a range of max values of 512-4096
 const long ADC_Max = 4096; 
 
@@ -33,8 +33,8 @@ void setup_servo() {
 
 void setup_wifi() {
   WiFi.mode(WIFI_STA);
-  WiFi.begin(SSID, WiFiPassword);
-  Serial.print("Connecting to "); Serial.println(SSID);
+  WiFi.begin(wifi_ssid, wifi_password);
+  Serial.print("Connecting to "); Serial.println(wifi_ssid);
 
   uint8_t i = 0;
   while (WiFi.status() != WL_CONNECTED) {
