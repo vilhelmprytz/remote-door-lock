@@ -1,0 +1,19 @@
+jobs:
+    include:
+      - language: python
+        name: backend (python)
+        python: 3.9
+        install:
+          - pip install flake8 black --upgrade
+        script:
+          - black --check backend/
+          - flake8 backend
+  
+      - language: node_js
+        name: frontend (JS)
+        node_js: 12
+        install:
+          - npm install --global prettier
+        script:
+          - prettier --check "frontend/src/**/*.js"
+  
