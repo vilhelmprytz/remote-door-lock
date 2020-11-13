@@ -12,15 +12,15 @@ class Api {
         // Your IP address with path or Domain name with URL path 
         http.begin(backend_endpoint);
 
+        String response;
+
         // Send HTTP POST request
         int httpResponseCode = http.GET();
-
-        String payload = "{}"; 
 
         if (httpResponseCode>0) {
             Serial.print("HTTP Response code: ");
             Serial.println(httpResponseCode);
-            payload = http.getString();
+            response = http.getString();
         }
         else {
             Serial.print("Error code: ");
@@ -29,6 +29,6 @@ class Api {
         // Free resources
         http.end();
 
-        return payload;
+        return response;
     };
 };
