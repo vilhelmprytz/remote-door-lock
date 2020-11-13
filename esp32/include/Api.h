@@ -10,7 +10,7 @@ class Api {
         HTTPClient http;
 
         // Your IP address with path or Domain name with URL path 
-        http.begin(backend_endpoint);
+        http.begin(API_ENDPOINT);
 
         String response;
 

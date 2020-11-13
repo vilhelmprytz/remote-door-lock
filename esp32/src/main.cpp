@@ -15,15 +15,19 @@ Servo doorServo;
 Api api;
 
 const long pin_servo_control = GPIO_NUM_18; // GPIO to servo PWM 
+const long refresh_interval = 5000;
 
 // This is the default ADC max value on the ESP32 (12 bit ADC width);
 // this width can be set (in low-level mode) from 9-12 bits, for a
 // a range of max values of 512-4096
 const long ADC_Max = 4096; 
 
-int pos = 0;  // curr val
+// default is locked
+bool lock_status = false;
 
 void setup_servo() {
+  // not too sure why these are needed but the
+  // servo module I'm using is slightly skew
   ESP32PWM::allocateTimer(0);
   ESP32PWM::allocateTimer(1);
   ESP32PWM::allocateTimer(2);
@@ -36,10 +40,11 @@ void setup_servo() {
   doorServo.attach(pin_servo_control, 600, 2400);
 }
 
+// init and connect to WiFi
 void setup_wifi() {
   WiFi.mode(WIFI_STA);
-  WiFi.begin(wifi_ssid, wifi_password);
-  Serial.print("Connecting to "); Serial.println(wifi_ssid);
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  Serial.print("Connecting to "); Serial.println(WIFI_SSID);
 
   uint8_t i = 0;
   while (WiFi.status() != WL_CONNECTED) {
@@ -72,7 +77,40 @@ void unlock() {
 }
 
 void loop() {
+  // update lock status from API
   String response = api.update();
+
+  // Enough space for:
+  // + 1 object with 5 member
+  const int capacity = JSON_OBJECT_SIZE(5);
+  StaticJsonDocument<capacity> doc;
+  DeserializationError err = deserializeJson(doc, response);  // data is in JSON so we need to deserialize it before using
+
+  if (err) {
+    // probably only occurs if response blob is not valid JSON
+    Serial.print(F("deserializeJson() failed with code "));
+    Serial.println(err.c_str());
+  } else {
+    lock_status = doc["response"]["locked"];
+  }
+
+  // perform action based on lock_status
+  if (lock_status) {
+    Serial.println("Locking door");
+    lock();
+  } else {
+    Serial.println("Unlocking door");
+    unlock();
+  }
+
+  // wait until next refresh
+  delay(refresh_interval);
+
+  // testing
+  // lock();
+  // delay(5000);
+  // unlock();
+  // delay(5000);
 
 	// for (pos = 0; pos <= 180; pos += 1) { // goes from 0 degrees to 180 degrees
 	// 	// in steps of 1 degree
