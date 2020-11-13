@@ -4,8 +4,8 @@ from pathlib import Path
 # add parent folder
 sys.path.append(str(Path(__file__).parent.parent.absolute()))
 
-from app import db, app
-from database_models import User
+from app import db, app  # noqa: E402
+from database_models import User  # noqa: E402
 
 email = input("Enter email: ")
 
