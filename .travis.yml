@@ -7,8 +7,8 @@ jobs:
           - pip install flake8 black --upgrade
         script:
           - black --check backend/
-          - flake8 backend
-  
+          - cd backend && flake8 .
+
       - language: node_js
         name: frontend (JS)
         node_js: 12
@@ -16,4 +16,3 @@ jobs:
           - npm install --global prettier
         script:
           - prettier --check "frontend/src/**/*.js"
-  
