@@ -15,7 +15,7 @@ Servo doorServo;
 Api api;
 
 const long pin_servo_control = GPIO_NUM_18; // GPIO to servo PWM 
-const long refresh_interval = 5000;
+const long refresh_interval = 2000;
 
 // This is the default ADC max value on the ESP32 (12 bit ADC width);
 // this width can be set (in low-level mode) from 9-12 bits, for a
@@ -23,27 +23,39 @@ const long refresh_interval = 5000;
 const long ADC_Max = 4096; 
 
 // default is locked
-bool lock_status = false;
+bool lock_status = true;
 
 void setup_servo() {
-  // not too sure why these are needed but the
-  // servo module I'm using is slightly skew
+  // Allow allocation of all timers
   ESP32PWM::allocateTimer(0);
   ESP32PWM::allocateTimer(1);
   ESP32PWM::allocateTimer(2);
   ESP32PWM::allocateTimer(3);
 
-  doorServo.setPeriodHertz(50); // standard 50hz (euro!)
+  // standard 50hz, modify for other servos
+  doorServo.setPeriodHertz(50);
 
   // for the FS5103B the pulse width range is between 600 and 2400
   // use other values if you are using another servo
-  doorServo.attach(pin_servo_control, 600, 2400);
+  doorServo.attach(pin_servo_control, 1000, 2000);
+}
+
+void wifi_begin() {
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+}
+
+void wifi_verify_conn() {
+  if (WiFi.status() == WL_CONNECT_FAILED) {
+    Serial.println("Lost WiFi connection (WL_CONNECT_FAILED), reconnecting..");
+    wifi_begin();
+  }
 }
 
 // init and connect to WiFi
 void setup_wifi() {
   WiFi.mode(WIFI_STA);
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+  wifi_begin();
+  WiFi.setHostname("remote-door-lock");
   Serial.print("Connecting to "); Serial.println(WIFI_SSID);
 
   uint8_t i = 0;
@@ -52,8 +64,11 @@ void setup_wifi() {
     delay(500);
  
     if ((++i % 16) == 0) {
-      Serial.println(F(" still trying to connect"));
+      Serial.print(F(" still trying to connect, status "));
+      Serial.println(WiFi.status());
     }
+
+    wifi_verify_conn();
   }
 
   Serial.print(F("Connected. My IP address is: "));
@@ -61,7 +76,7 @@ void setup_wifi() {
 }
 
 void setup() {
-  // debugging
+  // debugging, print to us
   Serial.begin(9600);
 
   setup_servo();
@@ -69,7 +84,7 @@ void setup() {
 }
 
 void lock() {
-  doorServo.write(180);
+  doorServo.write(90);
 }
 
 void unlock() {
@@ -77,12 +92,16 @@ void unlock() {
 }
 
 void loop() {
+  // verify connection not lost
+  wifi_verify_conn();
+
+  Serial.println("Refreshing data");
+
   // update lock status from API
   String response = api.update();
 
-  // Enough space for:
-  // + 1 object with 5 member
-  const int capacity = JSON_OBJECT_SIZE(5);
+  // to determine capacity needed, I've used https://arduinojson.org/v6/assistant/
+  const size_t capacity = JSON_OBJECT_SIZE(3) + JSON_OBJECT_SIZE(4) + 130;
   StaticJsonDocument<capacity> doc;
   DeserializationError err = deserializeJson(doc, response);  // data is in JSON so we need to deserialize it before using
 
@@ -91,7 +110,9 @@ void loop() {
     Serial.print(F("deserializeJson() failed with code "));
     Serial.println(err.c_str());
   } else {
-    lock_status = doc["response"]["locked"];
+    if (doc["response"]["locked"] != lock_status) {
+      lock_status = doc["response"]["locked"];
+    }
   }
 
   // perform action based on lock_status

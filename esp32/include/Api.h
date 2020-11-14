@@ -6,6 +6,8 @@ class Api {
 
     char *status;
 
+    // since http.getString() returns string and not char we just use String
+    // here as well to avoid conversion, even though it's more memory consuming
     String update() {
         HTTPClient http;
 

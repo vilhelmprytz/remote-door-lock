@@ -11,5 +11,5 @@ Put the following contents in the file, modify the values of the constants. The 
 ```c++
 #define WIFI_SSID ""
 #define WIFI_PASSWORD ""
-#define API_ENDPOINT "http://10.0.4.102:5000/api/servo"
+#define API_ENDPOINT "http://10.0.1.226:5000/api/lock"
 ```
