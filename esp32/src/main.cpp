@@ -15,7 +15,7 @@ Servo doorServo;
 Api api;
 
 const long pin_servo_control = GPIO_NUM_18; // GPIO to servo PWM 
-const long refresh_interval = 2000;
+const long refresh_interval = 1500;
 
 // This is the default ADC max value on the ESP32 (12 bit ADC width);
 // this width can be set (in low-level mode) from 9-12 bits, for a
