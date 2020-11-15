@@ -110,7 +110,7 @@ def history():
     return APIResponse(response={"log": log}).serialize()
 
 
-@app.route("/api/user", methods=["POST", "GET"])
+@app.route("/api/user", methods=["POST", "GET", "DELETE"])
 @authenticated
 def user():
     if request.method == "POST":
@@ -124,7 +124,32 @@ def user():
         db.session.add(user)
         db.session.commit()
 
-    return APIResponse(response={"users": User.query.all()}).serialize()
+    if request.method == "DELETE":
+        content = request.json
+
+        if "email" not in content:
+            abort(400, "missing key email")
+
+        user = User.query.filter_by(email=content["email"]).all()
+
+        if len(user) != 1:
+            abort(404, "user does not exist")
+
+        user = user[0]
+
+        db.session.delete(user)
+        db.session.commit()
+
+    users = [
+        {
+            "email": record.email,
+            "time_created": str(record.time_created),
+            "time_updated": str(record.time_updated),
+        }
+        for record in User.query.all()
+    ]
+
+    return APIResponse(response={"users": users}).serialize()
 
 
 app.register_blueprint(auth_blueprint, url_prefix="/api/auth")
