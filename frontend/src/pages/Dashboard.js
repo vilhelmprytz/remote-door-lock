@@ -13,6 +13,7 @@ function Dashboard(props) {
   const [lastUpdated, setLastUpdated] = useState(null);
   const [lastChangedBy, setLastChangedBy] = useState(null);
   const [history, setHistory] = useState([]);
+  const [users, setUsers] = useState([]);
 
   const updateInfo = () => {
     ApiCall("/api/lock").then((json) => {
@@ -27,6 +28,13 @@ function Dashboard(props) {
     ApiCall("/api/history").then((json) => {
       if (json.code === 200) {
         setHistory(json.response.log);
+      } else {
+        throw Error(`${json.description} (${json.code} ${json.name})`);
+      }
+    });
+    ApiCall("/api/user").then((json) => {
+      if (json.code === 200) {
+        setUsers(json.response.users);
       } else {
         throw Error(`${json.description} (${json.code} ${json.name})`);
       }
@@ -79,6 +87,22 @@ function Dashboard(props) {
             <td>{log.time_created}</td>
             <td>{log.toggle ? "locked" : "unlocked"}</td>
             <td>{log.email}</td>
+          </tr>
+        ))}
+      </table>
+
+      <Title>Users</Title>
+      <table>
+        <tr>
+          <th>Email</th>
+          <th>Created</th>
+          <th>Updated</th>
+        </tr>
+        {users.map((user) => (
+          <tr>
+            <td>{user.email}</td>
+            <td>{user.time_created}</td>
+            <td>{user.time_updated}</td>
           </tr>
         ))}
       </table>
