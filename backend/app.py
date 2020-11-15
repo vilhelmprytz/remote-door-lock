@@ -1,9 +1,11 @@
-from flask import Flask, json, request, abort
+from flask import Flask, json, request, abort, session
 from werkzeug.exceptions import HTTPException
 from flask_session import Session
+from flask_cors import CORS
 from redis import Redis
 from datetime import timedelta
 from os import environ
+from sqlalchemy import desc
 
 from models import APIResponse
 from database_models import db, Lock, User
@@ -12,20 +14,30 @@ from decorators.auth import authenticated
 
 app = Flask(__name__)
 
-MYSQL_USER = environ.get("MYSQL_USER", "booking")
+INSECURE = environ.get("INSECURE", False)
+FRONTEND_URL = environ.get("FRONTEND_URL", None)
+
+MYSQL_USER = environ.get("MYSQL_USER", "remote-door-lock")
 MYSQL_PASSWORD = environ.get("MYSQL_PASSWORD", "password")
 MYSQL_HOST = environ.get("MYSQL_HOST", "127.0.0.1")
-MYSQL_DATABASE = environ.get("MYSQL_DATABASE", "booking")
+MYSQL_DATABASE = environ.get("MYSQL_DATABASE", "remote-door-lock")
 
 app.config["SESSION_TYPE"] = "redis"
 app.config["SESSION_REDIS"] = Redis(host=environ.get("REDIS_HOST", "localhost"), db=0)
-app.config["SESSION_COOKIE_SECURE"] = True
+app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
 app.config["SESSION_PERMANENT"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=24)
+
 app.config[
     "SQLALCHEMY_DATABASE_URI"
 ] = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}?charset=utf8mb4"
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+
+if INSECURE:
+    CORS(app, supports_credentials=True)
+else:
+    app.config["SESSION_COOKIE_SECURE"] = True
+    CORS(app, resources={r"/*": {"origins": FRONTEND_URL}})
 
 db.init_app(app)
 
@@ -52,25 +64,50 @@ def handle_exception(e):
 
 @app.route("/api/lock", methods=["GET", "POST"])
 def lock():
-    # determine value
-    last = db.session.query(Lock).order_by(Lock.id.desc()).first()
-    locked = False if not last else last.toggle
-
-    if request.method == "POST":
+    @authenticated
+    def _post():
         content = request.json
 
         if "locked" not in content:
             abort(400, "missing variable locked in request json")
 
-        print(content["locked"])
+        update = Lock(email=session["google_email"], toggle=content["locked"])
 
-    return APIResponse(response={"locked": locked}).serialize()
+        db.session.add(update)
+        db.session.commit()
+
+    if request.method == "POST":
+        _post()
+
+    # determine value
+    last = db.session.query(Lock).order_by(Lock.id.desc()).first()
+    locked = False if not last else last.toggle
+    last_updated = None if not last else str(last.time_created)
+    changed_by = None if not last else last.email
+
+    return APIResponse(
+        response={
+            "locked": locked,
+            "last_updated": last_updated,
+            "changed_by": changed_by,
+        }
+    ).serialize()
 
 
 @app.route("/api/history", methods=["GET"])
 @authenticated
 def history():
-    return APIResponse(response={"log": Lock.query.all()}).serialize()
+    log = [
+        {
+            "email": record.email,
+            "toggle": record.toggle,
+            "time_created": str(record.time_created),
+            "time_updated": str(record.time_updated),
+        }
+        for record in Lock.query.order_by(desc(Lock.id)).limit(20).all()
+    ]
+
+    return APIResponse(response={"log": log}).serialize()
 
 
 @app.route("/api/user", methods=["POST", "GET"])

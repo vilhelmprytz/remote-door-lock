@@ -9,13 +9,14 @@ flake8 = "*"
 
 [packages]
 flask = "*"
-flask-session = "*"
-redis = "*"
 oauthlib = "*"
 requests = "*"
 pymysql = "*"
 flask-sqlalchemy = "*"
 cryptography = "*"
+flask-session = "*"
+redis = "*"
+flask-cors = "*"
 
 [requires]
 python_version = "3.9"
