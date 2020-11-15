@@ -1,0 +1,27 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql
+    environment:
+      MYSQL_DATABASE: 'remote-door-lock'
+      MYSQL_USER: 'remote-door-lock'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      MYSQL_ROOT_PASSWORD: '${MYSQL_PASSWORD}'
+  redis:
+    image: redis
+  app:
+    image: prytz/remote-door-lock
+    environment:
+      MYSQL_HOST: 'mysql'
+      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
+      REDIS_HOST: 'redis'
+      GOOGLE_CLIENT_ID: '${GOOGLE_CLIENT_ID}'
+      GOOGLE_CLIENT_SECRET: '${GOOGLE_CLIENT_SECRET}'
+      FRONTEND_URL: '${FRONTEND_URL}'
+      BACKEND_URL: '${BACKEND_URL}'
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - ${PORT}:${PORT}
