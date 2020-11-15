@@ -20,6 +20,7 @@ services:
       GOOGLE_CLIENT_SECRET: '${GOOGLE_CLIENT_SECRET}'
       FRONTEND_URL: '${FRONTEND_URL}'
       BACKEND_URL: '${BACKEND_URL}'
+      OAUTHLIB_INSECURE_TRANSPORT: '${OAUTHLIB_INSECURE_TRANSPORT}'
       PORT: '${PORT}'
     depends_on:
       # - mysql
