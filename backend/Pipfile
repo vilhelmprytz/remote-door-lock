@@ -17,6 +17,7 @@ cryptography = "*"
 flask-session = "*"
 redis = "*"
 flask-cors = "*"
+gunicorn = "*"
 
 [requires]
 python_version = "3.9"
