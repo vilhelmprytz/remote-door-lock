@@ -24,4 +24,7 @@ services:
       - mysql
       - redis
     ports:
-      - ${PORT}:${PORT}
+      - 7000:7000
+    epose:
+      - 7000
+
