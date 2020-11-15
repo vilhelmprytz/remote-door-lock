@@ -17,10 +17,10 @@ app = Flask(__name__)
 INSECURE = environ.get("INSECURE", False)
 FRONTEND_URL = environ.get("FRONTEND_URL", None)
 
-MYSQL_USER = environ.get("MYSQL_USER", "remote-door-lock")
+MYSQL_USER = environ.get("MYSQL_USER", "remote_door_lock")
 MYSQL_PASSWORD = environ.get("MYSQL_PASSWORD", "password")
 MYSQL_HOST = environ.get("MYSQL_HOST", "127.0.0.1")
-MYSQL_DATABASE = environ.get("MYSQL_DATABASE", "remote-door-lock")
+MYSQL_DATABASE = environ.get("MYSQL_DATABASE", "remote_door_lock")
 
 app.config["SESSION_TYPE"] = "redis"
 app.config["SESSION_REDIS"] = Redis(host=environ.get("REDIS_HOST", "localhost"), db=0)

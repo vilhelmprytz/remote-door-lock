@@ -4,8 +4,8 @@ services:
     mysql:
         image: mysql
         environment:
-            MYSQL_DATABASE: 'remote-door-lock'
-            MYSQL_USER: 'remote-door-lock'
+            MYSQL_DATABASE: 'remote_door_lock'
+            MYSQL_USER: 'remote_door_lock'
             MYSQL_PASSWORD: 'password'
             MYSQL_ROOT_PASSWORD: 'password'
         ports:
