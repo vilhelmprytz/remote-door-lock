@@ -25,6 +25,6 @@ services:
       - redis
     ports:
       - 7000:7000
-    epose:
+    expose:
       - 7000
 
