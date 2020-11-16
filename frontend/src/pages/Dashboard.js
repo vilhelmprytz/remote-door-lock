@@ -14,6 +14,7 @@ function Dashboard(props) {
   const [lastChangedBy, setLastChangedBy] = useState(null);
   const [history, setHistory] = useState([]);
   const [users, setUsers] = useState([]);
+  const [newUser, setNewUser] = useState("");
 
   const updateInfo = () => {
     ApiCall("/api/lock").then((json) => {
@@ -57,6 +58,31 @@ function Dashboard(props) {
     );
   };
 
+  const deleteUser = (email) => {
+    ApiCall("/api/user", "DELETE", JSON.stringify({ email: email })).then(
+      (json) => {
+        if (json.code === 200) {
+          updateInfo();
+        } else {
+          throw Error(`${json.description} (${json.code} ${json.name})`);
+        }
+      }
+    );
+  };
+
+  const submitNewUser = () => {
+    ApiCall("/api/user", "POST", JSON.stringify({ email: newUser })).then(
+      (json) => {
+        if (json.code === 200) {
+          updateInfo();
+          setNewUser("");
+        } else {
+          throw Error(`${json.description} (${json.code} ${json.name})`);
+        }
+      }
+    );
+  };
+
   return (
     <div>
       <Title>Remote Door Lock</Title>
@@ -72,7 +98,7 @@ function Dashboard(props) {
         {locked ? "Unlock" : "Lock"}
       </Button>
       <a href={`${BACKEND_URL}/api/auth/logout`}>
-        <Button>Logga ut</Button>
+        <Button>Log out</Button>
       </a>
 
       <Title>Last 20 events</Title>
@@ -92,17 +118,35 @@ function Dashboard(props) {
       </table>
 
       <Title>Users</Title>
+      <Paragraph>Create new user.</Paragraph>
+      <form
+        onSubmit={(e) => {
+          e.preventDefault();
+          submitNewUser();
+        }}
+      >
+        <input
+          type="email"
+          name="email"
+          value={newUser}
+          onChange={(e) => setNewUser(e.target.value)}
+        ></input>
+      </form>
       <table>
         <tr>
           <th>Email</th>
           <th>Created</th>
           <th>Updated</th>
+          <th>Action</th>
         </tr>
         {users.map((user) => (
           <tr>
             <td>{user.email}</td>
             <td>{user.time_created}</td>
             <td>{user.time_updated}</td>
+            <td>
+              <Button onClick={() => deleteUser(user.email)}>Delete</Button>
+            </td>
           </tr>
         ))}
       </table>
