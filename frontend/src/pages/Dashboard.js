@@ -46,6 +46,14 @@ function Dashboard(props) {
     updateInfo();
   }, []);
 
+  // this is bad practice but works for the scale of this project
+  useEffect(() => {
+    const interval = setInterval(() => {
+      updateInfo();
+    }, 1500);
+    return () => clearInterval(interval);
+  }, []);
+
   const toggleLock = () => {
     ApiCall("/api/lock", "POST", JSON.stringify({ locked: !locked })).then(
       (json) => {
