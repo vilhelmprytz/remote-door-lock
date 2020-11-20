@@ -5,6 +5,7 @@ import Button from "../components/Button";
 import Paragraph from "../components/Paragraph";
 import Title from "../components/Title";
 import Image from "../components/Image";
+import Alert from "../components/Alert";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
@@ -15,6 +16,16 @@ function Dashboard(props) {
   const [history, setHistory] = useState([]);
   const [users, setUsers] = useState([]);
   const [newUser, setNewUser] = useState("");
+  const [error, setError] = useState("");
+
+  const handleError = (json) => {
+    setError({
+      code: json.code,
+      description: json.description,
+      name: json.name,
+    });
+    throw Error(`${json.description} (${json.code} ${json.name})`);
+  };
 
   const updateInfo = () => {
     ApiCall("/api/lock").then((json) => {
@@ -23,21 +34,21 @@ function Dashboard(props) {
         setLastUpdated(json.response.last_updated);
         setLastChangedBy(json.response.changed_by);
       } else {
-        throw Error(`${json.description} (${json.code} ${json.name})`);
+        handleError(json);
       }
     });
     ApiCall("/api/history").then((json) => {
       if (json.code === 200) {
         setHistory(json.response.log);
       } else {
-        throw Error(`${json.description} (${json.code} ${json.name})`);
+        handleError(json);
       }
     });
     ApiCall("/api/user").then((json) => {
       if (json.code === 200) {
         setUsers(json.response.users);
       } else {
-        throw Error(`${json.description} (${json.code} ${json.name})`);
+        handleError(json);
       }
     });
   };
@@ -60,7 +71,7 @@ function Dashboard(props) {
         if (json.code === 200) {
           updateInfo();
         } else {
-          throw Error(`${json.description} (${json.code} ${json.name})`);
+          handleError(json);
         }
       }
     );
@@ -72,7 +83,7 @@ function Dashboard(props) {
         if (json.code === 200) {
           updateInfo();
         } else {
-          throw Error(`${json.description} (${json.code} ${json.name})`);
+          handleError(json);
         }
       }
     );
@@ -85,7 +96,7 @@ function Dashboard(props) {
           updateInfo();
           setNewUser("");
         } else {
-          throw Error(`${json.description} (${json.code} ${json.name})`);
+          handleError(json);
         }
       }
     );
@@ -95,6 +106,18 @@ function Dashboard(props) {
     <div>
       <Title>Remote Door Lock</Title>
       <Image alt={`Avatar for ${props.user.name}`} src={props.user.avatar} />
+
+      {error && (
+        <Alert>
+          <b>
+            <Paragraph>
+              {error.code} {error.name}
+            </Paragraph>
+          </b>
+          <Paragraph>{error.description}</Paragraph>
+        </Alert>
+      )}
+
       <Paragraph>
         Signed in as {props.user.name} ({props.user.email})
       </Paragraph>
