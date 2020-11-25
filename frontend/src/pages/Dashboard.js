@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import ApiCall from "../ApiCall";
 
 import Button from "../components/Button";
@@ -27,7 +27,7 @@ function Dashboard(props) {
     throw Error(`${json.description} (${json.code} ${json.name})`);
   };
 
-  const updateInfo = () => {
+  const updateInfo = useCallback(() => {
     ApiCall("/api/lock").then((json) => {
       if (json.code === 200) {
         setLocked(json.response.locked);
@@ -51,11 +51,9 @@ function Dashboard(props) {
         handleError(json);
       }
     });
-  };
-
-  useEffect(() => {
-    updateInfo();
   }, []);
+
+  useEffect(updateInfo, [updateInfo]);
 
   // this is bad practice but works for the scale of this project
   useEffect(() => {
@@ -63,7 +61,7 @@ function Dashboard(props) {
       updateInfo();
     }, 1500);
     return () => clearInterval(interval);
-  }, []);
+  }, [updateInfo]);
 
   const toggleLock = () => {
     ApiCall("/api/lock", "POST", JSON.stringify({ locked: !locked })).then(
@@ -134,18 +132,20 @@ function Dashboard(props) {
 
       <Title>Last 20 events</Title>
       <table>
-        <tr>
-          <th>Time</th>
-          <th>Action</th>
-          <th>User</th>
-        </tr>
-        {history.map((log) => (
+        <tbody>
           <tr>
-            <td>{log.time_created}</td>
-            <td>{log.toggle ? "locked" : "unlocked"}</td>
-            <td>{log.email}</td>
+            <th>Time</th>
+            <th>Action</th>
+            <th>User</th>
           </tr>
-        ))}
+          {history.map((log) => (
+            <tr key={log.id}>
+              <td>{log.time_created}</td>
+              <td>{log.toggle ? "locked" : "unlocked"}</td>
+              <td>{log.email}</td>
+            </tr>
+          ))}
+        </tbody>
       </table>
 
       <Title>Users</Title>
@@ -164,22 +164,24 @@ function Dashboard(props) {
         ></input>
       </form>
       <table>
-        <tr>
-          <th>Email</th>
-          <th>Created</th>
-          <th>Updated</th>
-          <th>Action</th>
-        </tr>
-        {users.map((user) => (
+        <tbody>
           <tr>
-            <td>{user.email}</td>
-            <td>{user.time_created}</td>
-            <td>{user.time_updated}</td>
-            <td>
-              <Button onClick={() => deleteUser(user.email)}>Delete</Button>
-            </td>
+            <th>Email</th>
+            <th>Created</th>
+            <th>Updated</th>
+            <th>Action</th>
           </tr>
-        ))}
+          {users.map((user) => (
+            <tr key={user.id}>
+              <td>{user.email}</td>
+              <td>{user.time_created}</td>
+              <td>{user.time_updated}</td>
+              <td>
+                <Button onClick={() => deleteUser(user.email)}>Delete</Button>
+              </td>
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
