@@ -99,6 +99,7 @@ def lock():
 def history():
     log = [
         {
+            "id": record.id,
             "email": record.email,
             "toggle": record.toggle,
             "time_created": str(record.time_created),
@@ -142,6 +143,7 @@ def user():
 
     users = [
         {
+            "id": record.id,
             "email": record.email,
             "time_created": str(record.time_created),
             "time_updated": str(record.time_updated),
