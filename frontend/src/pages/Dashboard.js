@@ -67,6 +67,7 @@ function Dashboard(props) {
     ApiCall("/api/lock", "POST", JSON.stringify({ locked: !locked })).then(
       (json) => {
         if (json.code === 200) {
+          setLocked(!locked);
           updateInfo();
         } else {
           handleError(json);
