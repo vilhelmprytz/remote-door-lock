@@ -6,8 +6,8 @@ React frontend for remote-door-lock project. Communicates against the backend AP
 
 Before you build the frontend for production, you need to specify environment variables in a file named `.env` in this directory. As a reference, you may copy the `.env.example` and modify it to suit your setup.
 
-* `REACT_APP_BACKEND_URL` - base URL for backend API, e.g. `https://door-lock.example.com` or `http://localhost:5000`
-* `REACT_APP_ALLOW_CROSS_COOKIE` - Allows the browser to include it's cookies regardless of source. Potentially hazardous, don't use in production!
+- `REACT_APP_BACKEND_URL` - base URL for backend API, e.g. `https://door-lock.example.com` or `http://localhost:5000`
+- `REACT_APP_ALLOW_CROSS_COOKIE` - Allows the browser to include it's cookies regardless of source. Potentially hazardous, don't use in production!
 
 ## Available Scripts
 

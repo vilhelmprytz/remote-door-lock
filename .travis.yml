@@ -15,4 +15,4 @@ jobs:
         install:
           - npm install --global prettier
         script:
-          - prettier --check "frontend/src/**/*.js"
+          - cd frontend && prettier --check .
