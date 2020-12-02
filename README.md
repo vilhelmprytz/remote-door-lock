@@ -17,11 +17,13 @@ Thirdly, the project consists of a frontend. The frontend is written in React (J
 - Wemos D1 Mini32 ESP32 or similar (with WiFi!)
 - Servo Motor FS5103B or similar, see [datasheet](https://www.pololu.com/file/0J1431/FS5103B-specs.pdf)
 
-## Circuit Diagram
+## Circuit Diagram/Schematic
 
 ![Circuit Diagram created with Fritzing](docs/circuit-diagram.jpg)
 
 Note! The battery in the diagram is not accurate. The servo motor FS5103B recommends 4.8V or 6.0V while the battery in the diagram is 3.7V. With my testing, the servo works with lower voltages as well but it is not guaranteed. Adjust the battery to run with your servo.
+
+![Circuit Schematic created with Fritzing](docs/circuit-schematic.jpg)
 
 ## Contributors ✨
 
