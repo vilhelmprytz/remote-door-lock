@@ -84,7 +84,7 @@ void setup() {
 }
 
 void lock() {
-  doorServo.write(90);
+  doorServo.write(120);
 }
 
 void unlock() {
