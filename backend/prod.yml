@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   # mysql:
@@ -13,15 +13,15 @@ services:
   app:
     image: prytz/remote-door-lock
     environment:
-      MYSQL_HOST: '${MYSQL_HOST}'
-      MYSQL_PASSWORD: '${MYSQL_PASSWORD}'
-      REDIS_HOST: 'redis'
-      GOOGLE_CLIENT_ID: '${GOOGLE_CLIENT_ID}'
-      GOOGLE_CLIENT_SECRET: '${GOOGLE_CLIENT_SECRET}'
-      FRONTEND_URL: '${FRONTEND_URL}'
-      BACKEND_URL: '${BACKEND_URL}'
-      OAUTHLIB_INSECURE_TRANSPORT: '${OAUTHLIB_INSECURE_TRANSPORT}'
-      PORT: '${PORT}'
+      MYSQL_HOST: "${MYSQL_HOST}"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      REDIS_HOST: "redis"
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
+      FRONTEND_URL: "${FRONTEND_URL}"
+      BACKEND_URL: "${BACKEND_URL}"
+      OAUTHLIB_INSECURE_TRANSPORT: "${OAUTHLIB_INSECURE_TRANSPORT}"
+      PORT: "${PORT}"
     depends_on:
       # - mysql
       - redis
@@ -29,4 +29,3 @@ services:
       - 7000:7000
     expose:
       - 7000
-
