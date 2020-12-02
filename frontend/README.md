@@ -1,6 +1,6 @@
 # remote-door-lock/frontend
 
-React frontend for remote-door-lock project. Communicates against the backend API.
+React frontend for the remote-door-lock project. Communicates against the backend API.
 
 ## Configuration before build/development
 
