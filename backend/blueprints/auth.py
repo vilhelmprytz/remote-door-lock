@@ -3,6 +3,7 @@ from flask import Blueprint, request, abort, session, redirect
 from models import APIResponse
 from database_models import User
 from decorators.auth import authenticated
+from logger import get_logger
 
 from os import environ
 from oauthlib.oauth2 import WebApplicationClient
@@ -18,6 +19,9 @@ BACKEND_URL = environ.get("BACKEND_URL", None)
 
 # OAuth 2 client setup
 client = WebApplicationClient(GOOGLE_CLIENT_ID)
+
+# logger
+logger = get_logger()
 
 auth_blueprint = Blueprint("auth", __name__, template_folder="../templates")
 
@@ -89,6 +93,9 @@ def callback():
         user = User.query.filter_by(email=userinfo_response.json()["email"]).all()
 
         if not user:
+            logger.info(
+                f"User {userinfo_response.json()['email']} tried to sign-in, not allowed"
+            )
             abort(401, "Google Account not allowed to sign-in here")
 
         session["authenticated"] = True
