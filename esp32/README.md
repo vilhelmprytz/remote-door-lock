@@ -8,7 +8,7 @@ Use VS Code with the PlatformIO extension to build the project with the required
 
 ## Configuration
 
-For the ESP32 software to work, you need to create a header file with some configuration variables. Create a file in the `include` folder with the name `build_config.h`, i.e. `include/build_config.h`.
+For the ESP32 software to work, you need to create a header file with some configuration variables. Create a file in the `include` folder with the name `BuildConfig.h`, i.e. `include/BuildConfig.h`.
 
 Put the following contents in the file, modify the values of the constants. The variables are quite self-explanatory.
 
