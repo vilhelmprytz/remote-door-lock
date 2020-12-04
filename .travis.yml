@@ -9,6 +9,10 @@ jobs:
         - pio update
       script:
         - cd esp32
+
+        # example BuildConfig.h
+        - touch include/BuildConfig.h
+
         - pio ci --project-conf=platformio.ini --lib="." .
 
     - language: python
