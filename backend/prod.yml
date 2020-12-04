@@ -10,6 +10,7 @@ services:
   #     MYSQL_ROOT_PASSWORD: '${MYSQL_PASSWORD}'
   redis:
     image: redis
+    container_name: remote_door_lock_redis
   app:
     image: prytz/remote-door-lock
     environment:
@@ -29,3 +30,4 @@ services:
       - 7000:7000
     expose:
       - 7000
+    container_name: remote_door_lock_api
