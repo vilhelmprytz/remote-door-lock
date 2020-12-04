@@ -8,8 +8,6 @@ jobs:
         - pip install -U platformio
         - pio update
       script:
-        - cd esp32
-
         # example BuildConfig.h
         - echo '#define WIFI_SSID ""' >> include/BuildConfig.h
         - echo '#define WIFI_PASSWORD ""' >> include/BuildConfig.h
