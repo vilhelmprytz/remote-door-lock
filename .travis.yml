@@ -11,7 +11,9 @@ jobs:
         - cd esp32
 
         # example BuildConfig.h
-        - touch include/BuildConfig.h
+        - echo '#define WIFI_SSID ""' >> include/BuildConfig.h
+        - echo '#define WIFI_PASSWORD ""' >> include/BuildConfig.h
+        - echo '#define API_ENDPOINT ""' >> include/BuildConfig.h
 
         - pio ci --project-conf=platformio.ini --lib="." .
 
