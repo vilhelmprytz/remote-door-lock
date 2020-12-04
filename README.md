@@ -21,7 +21,7 @@ Thirdly, the project consists of a frontend. The frontend is written in React (J
 
 ![Circuit Diagram created with Fritzing](docs/circuit-diagram.jpg)
 
-Note! The battery in the diagram is not accurate. The servo motor FS5103B recommends 4.8V or 6.0V while the battery in the diagram is 3.7V. With my testing, the servo works with lower voltages as well but it is not guaranteed. Adjust the battery to run with your servo.
+Note! The battery in the diagram is not accurate. The servo motor FS5103B recommends a voltage range of 4.8V to 6.0V while the battery in the diagram is 3.7V. With my testing, the servo works with lower voltages as well but it is not guaranteed. Adjust the battery to run with your servo.
 
 ![Circuit Schematic created with Fritzing](docs/circuit-schematic.jpg)
 
