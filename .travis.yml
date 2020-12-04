@@ -1,18 +1,29 @@
 jobs:
-    include:
-      - language: python
-        name: backend (python)
-        python: 3.9
-        install:
-          - pip install flake8 black --upgrade
-        script:
-          - black --check backend/
-          - cd backend && flake8 .
+  include:
+    - language: python
+      name: platformio CI
+      python: 3.9
+      install:
+        - cd esp32
+        - pip install -U platformio
+        - pio update
+      script:
+        - cd esp32
+        - pio ci --project-conf=platformio.ini --lib="." .
 
-      - language: node_js
-        name: frontend (JS)
-        node_js: 12
-        install:
-          - npm install --global prettier
-        script:
-          - cd frontend && prettier --check .
+    - language: python
+      name: backend (python)
+      python: 3.9
+      install:
+        - pip install flake8 black --upgrade
+      script:
+        - black --check backend/
+        - cd backend && flake8 .
+
+    - language: node_js
+      name: frontend (JS)
+      node_js: 12
+      install:
+        - npm install --global prettier
+      script:
+        - cd frontend && prettier --check .
