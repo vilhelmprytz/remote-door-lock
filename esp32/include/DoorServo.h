@@ -18,13 +18,13 @@ class DoorServo {
         // standard 50hz, modify for other servos
         servo.setPeriodHertz(50);
 
-        // for the FS5103B the pulse width range is between 600 and 2400
+        // for the FS5103R the pulse width range is between 700 and 2300
         // use other values if you are using another servo
-        servo.attach(pin_servo_control, 1000, 2000);
+        servo.attach(pin_servo_control, 700, 2300);
     }
 
     void lock() {
-        servo.write(120);
+        servo.write(360);
     }
 
     void unlock() {
