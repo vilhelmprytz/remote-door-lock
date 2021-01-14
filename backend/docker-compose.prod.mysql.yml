@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql
+    container_name: remote_door_lock_mysql
+    environment:
+      MYSQL_DATABASE: "remote_door_lock"
+      MYSQL_USER: "remote_door_lock"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
+    volumes:
+      - remote-door-lock-mysql:/var/lib/mysql
+
+  redis:
+    image: redis
+    container_name: remote_door_lock_redis
+
+  app:
+    image: prytz/remote-door-lock
+    environment:
+      MYSQL_HOST: "mysql"
+      MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
+      REDIS_HOST: "redis"
+      GOOGLE_CLIENT_ID: "${GOOGLE_CLIENT_ID}"
+      GOOGLE_CLIENT_SECRET: "${GOOGLE_CLIENT_SECRET}"
+      FRONTEND_URL: "${FRONTEND_URL}"
+      BACKEND_URL: "${BACKEND_URL}"
+      OAUTHLIB_INSECURE_TRANSPORT: "${OAUTHLIB_INSECURE_TRANSPORT}"
+      PORT: "${PORT}"
+    depends_on:
+      - mysql
+      - redis
+    ports:
+      - "${PORT}:${PORT}"
+    expose:
+      - "${PORT}"
+    container_name: remote_door_lock_app
+
+volumes:
+  remote-door-lock-mysql:

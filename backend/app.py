@@ -22,15 +22,22 @@ MYSQL_PASSWORD = environ.get("MYSQL_PASSWORD", "password")
 MYSQL_HOST = environ.get("MYSQL_HOST", "127.0.0.1")
 MYSQL_DATABASE = environ.get("MYSQL_DATABASE", "remote_door_lock")
 
+DATABASE_TYPE = environ.get("DATABASE_TYPE", "mysql")
+
 app.config["SESSION_TYPE"] = "redis"
 app.config["SESSION_REDIS"] = Redis(host=environ.get("REDIS_HOST", "localhost"), db=0)
 app.config["SESSION_COOKIE_SAMESITE"] = "Strict"
 app.config["SESSION_PERMANENT"] = True
 app.config["PERMANENT_SESSION_LIFETIME"] = timedelta(hours=24)
 
-app.config[
-    "SQLALCHEMY_DATABASE_URI"
-] = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}?charset=utf8mb4"
+if DATABASE_TYPE == "mysql":
+    app.config[
+        "SQLALCHEMY_DATABASE_URI"
+    ] = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}?charset=utf8mb4"
+elif DATABASE_TYPE == "sqlite":
+    app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///database/remote_door_lock.db"
+else:
+    raise Exception(f"invalid DATABASE_TYPE {DATABASE_TYPE}")
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
 
 if INSECURE:
