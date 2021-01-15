@@ -1,57 +1,88 @@
 # remote-door-lock/backend
 
-Python backend.
+Backend API written in Python (Flask).
 
-## Requirements
+## Deployment
 
-For deployment, you only need Docker and docker-compose.
+This guide will show you how to deploy the API application.
 
-For local development, you also need the following:
+### Deployment Requirements
+
+For deployment, you only need [Docker](https://docs.docker.com/engine/install/ubuntu/) and [docker-compose](https://docs.docker.com/compose).
+
+### Deployment Instructions
+
+Choose whether to use SQLite or MySQL as your database driver. SQLite is great for smaller applications where no traffic is expected or if you are tight on RAM (SQLite is just a `.db` file). MySQL scales a lot better but uses more RAM. You can also easily modify the project to work with PostgreSQL since the module [Flask-SQLAlchemy](https://flask-sqlalchemy.palletsprojects.com), that is used in this project, supports it as well.
+
+#### MySQL
+
+Clone the project to your server. Go to the `backend` folder. Copy the file `.env.mysql.example` to `.env` and modify the variables to suit your setup. All the variables are described in the file.
+
+Once configured, start the app with `docker-compose`.
+
+```bash
+docker-compose -f docker-compose.prod.mysql.yml up -d
+```
+
+#### SQLite
+
+Clone the project to your server. Go to the `backend` folder. Copy the file `.env.sqlite.example` to `.env` and modify the variables to suit your setup. All the variables are described in the file.
+
+Once configured, start the app with `docker-compose`.
+
+```bash
+docker-compose -f docker-compose.prod.mysql.yml up -d
+```
+
+### Creating the first user
+
+Once you got the app running, you need to create your first user from the command-line. This can easily be done using docker-compose (replace `mysql` with `sqlite` if you are using SQLite).
+
+```bash
+docker-compose -f docker-compose.prod.mysql.yml exec app ".venv/bin/python" "scripts/create_user.py"
+```
+
+### Serving the API
+
+Serving the app on port 80/443 is not suitable. You should use Nginx to `proxy_pass` all requests on `/api` to the Docker container. Then you can use Nginx to serve the static frontend which improves application performance.
+
+Example Nginx location block (this is not a full Nginx configuration file!).
+
+```nginx
+location /api {
+    # replace 5000 with the port you are using
+    proxy_pass http://127.0.0.1:5000;
+    proxy_redirect off;
+}
+```
+
+## Local development
+
+For local development, you do not only need the deployment dependencies but also the following:
 
 - Python 3.9
 - [Pipenv](https://github.com/pypa/pipenv)
 
-## Environment Variables
-
-Environment variables required for the backend to run. Define in `.env` file. As a reference, you may copy the `.env.example` and modify it to suit your setup.
-
-### Required Environment Variables
-
-- `GOOGLE_CLIENT_ID` - Google Client ID
-- `GOOGLE_CLIENT_SECRET` - Google Client Secret
-- `FRONTEND_URL` - The URL where the frontend is served.
-- `BACKEND_URL` - Base URL where backend API is running. The value for this can be same as for `FRONTEND_URL`.
-- `PORT` - Required for deployment. Port the production deployment will listen to.
-
-### Optional Environment Variables
-
-- `MYSQL_USER` - MySQL username, overrides default `remote-door-lock`
-- `MYSQL_PASSWORD` - MySQL password, overrides default `password`
-- `MYSQL_HOST` - MySQL host, overrides default `127.0.0.1`. Use `host.machine` and the app will use the internal IP of the host machine (e.g. any MySQL instance running on the same Docker host but outside the container).
-- `MYSQL_DATABASE` - MySQL database, overrides default `remote-door-lock`
-- `REDIS_HOST` - Hostname for Redis server, overrides default `localhost`
-
-### Development Environment Variables
-
-- `OAUTHLIB_INSECURE_TRANSPORT` - OAuthLib does not run with HTTP. If you are (dangerous!), use this to override.
-- `INSECURE` - Enforces insecure CORS and cookie settings. Only for local development.
-
-## Deployment Instructions
-
-Create a `.env` file according to [the instructions above](#environment-variables).
-
-Use `docker-compose` to start the container.
+For testing, you need a MySQL database running locally. We use docker-compose to make this very easy.
 
 ```bash
-docker-compose -f prod.yml up -d
+docker-compose up -d
 ```
 
-The API will then start, listening to port 7000. You can then use Nginx to `proxy_pass` all requests on `/api` to the Docker container.
+Then use Pipenv to make sure you got all the dependencies for the Python application.
 
-Example Nginx location block.
+```bash
+pipenv --python 3.9 install --dev
+```
 
-```nginx
-location /api {
-    proxy_pass http://127.0.0.1:7000;
-}
+To enter the virtual environment, use Pipenv.
+
+```bash
+pipenv shell
+```
+
+You can now start the app locally.
+
+```bash
+python app.py
 ```

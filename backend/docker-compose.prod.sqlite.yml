@@ -16,6 +16,7 @@ services:
       OAUTHLIB_INSECURE_TRANSPORT: "${OAUTHLIB_INSECURE_TRANSPORT}"
       PORT: "${PORT}"
       DATABASE_TYPE: "sqlite"
+      INSECURE: "${INSECURE}"
     depends_on:
       - redis
     ports:

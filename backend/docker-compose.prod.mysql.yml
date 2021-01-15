@@ -28,6 +28,7 @@ services:
       BACKEND_URL: "${BACKEND_URL}"
       OAUTHLIB_INSECURE_TRANSPORT: "${OAUTHLIB_INSECURE_TRANSPORT}"
       PORT: "${PORT}"
+      INSECURE: "${INSECURE}"
     depends_on:
       - mysql
       - redis
