@@ -24,10 +24,16 @@ public:
         servo.attach(pin_servo_control, 700, 2300);
     }
 
-    void turn_lock(int val)
+    /**
+     * Write servo position
+     * 
+     * @param pos integer "degree"/pos to send to servo (degree for non-360 deg servos)
+     * @return void
+     */
+    void turn_lock(int pos)
     {
         setup();
-        servo.write(val);
+        servo.write(pos);
         delay(5000);
         servo.detach();
     }
