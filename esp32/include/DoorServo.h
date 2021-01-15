@@ -1,14 +1,15 @@
 // since ESP32 does not have the Arduino built-in library, this is a fork found on GitHub
-#include <ESP32Servo.h> 
+#include <ESP32Servo.h>
 
-class DoorServo {
-    public:
-
-    Servo servo;    // servo method from ESP32Servo
+class DoorServo
+{
+public:
+    Servo servo; // servo method from ESP32Servo
     bool lock_status = true;
-    const long pin_servo_control = GPIO_NUM_18; // GPIO to servo PWM 
+    const long pin_servo_control = GPIO_NUM_18; // GPIO to servo PWM
 
-    void setup() {
+    void setup()
+    {
         // Allow allocation of all timers
         ESP32PWM::allocateTimer(0);
         ESP32PWM::allocateTimer(1);
@@ -23,18 +24,21 @@ class DoorServo {
         servo.attach(pin_servo_control, 700, 2300);
     }
 
-    void turn_lock(int val) {
+    void turn_lock(int val)
+    {
         setup();
         servo.write(val);
         delay(5000);
         servo.detach();
     }
 
-    void lock() {
+    void lock()
+    {
         turn_lock(180);
     }
 
-    void unlock() {
+    void unlock()
+    {
         turn_lock(0);
     }
 
@@ -44,14 +48,19 @@ class DoorServo {
      * @param new_val Boolean new value for lock. true: locked, false: unlocked
      * @return void
      */
-    void sync(bool new_val) {
+    void sync(bool new_val)
+    {
         // only speak with servo if it has changed
-        if (new_val != lock_status) {
+        if (new_val != lock_status)
+        {
             lock_status = new_val;
-            if (lock_status) {
+            if (lock_status)
+            {
                 Serial.println("Locking door");
                 lock();
-            } else {
+            }
+            else
+            {
                 Serial.println("Unlocking door");
                 unlock();
             }

@@ -12,14 +12,16 @@ WiFiConn wifiConn;
 
 const long refresh_interval = 1500;
 
-void setup() {
+void setup()
+{
   // debugging, print to us
   Serial.begin(9600);
 
   wifiConn.setup();
 }
 
-void loop() {
+void loop()
+{
   // verify WiFi is alive
   wifiConn.alive();
 
