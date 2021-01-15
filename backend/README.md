@@ -39,7 +39,7 @@ docker-compose -f docker-compose.prod.mysql.yml up -d
 Once you got the app running, you need to create your first user from the command-line. This can easily be done using docker-compose (replace `mysql` with `sqlite` if you are using SQLite).
 
 ```bash
-docker-compose -f docker-compose.prod.mysql.yml exec app ".venv/bin/python" "scripts/create_user.py"
+docker-compose -f docker-compose.prod.mysql.yml exec app python scripts/create_user.py
 ```
 
 ### Serving the API
