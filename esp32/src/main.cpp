@@ -16,7 +16,6 @@ void setup() {
   // debugging, print to us
   Serial.begin(9600);
 
-  doorServo.setup();
   wifiConn.setup();
 }
 

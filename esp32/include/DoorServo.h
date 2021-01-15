@@ -23,12 +23,19 @@ class DoorServo {
         servo.attach(pin_servo_control, 700, 2300);
     }
 
+    void turn_lock(int val) {
+        setup();
+        servo.write(val);
+        delay(5000);
+        servo.detach();
+    }
+
     void lock() {
-        servo.write(360);
+        turn_lock(180);
     }
 
     void unlock() {
-        servo.write(0);
+        turn_lock(0);
     }
 
     /**
@@ -38,13 +45,16 @@ class DoorServo {
      * @return void
      */
     void sync(bool new_val) {
-        lock_status = new_val;
-        if (lock_status) {
-            Serial.println("Locking door");
-            lock();
-        } else {
-            Serial.println("Unlocking door");
-            unlock();
+        // only speak with servo if it has changed
+        if (new_val != lock_status) {
+            lock_status = new_val;
+            if (lock_status) {
+                Serial.println("Locking door");
+                lock();
+            } else {
+                Serial.println("Unlocking door");
+                unlock();
+            }
         }
     }
 };
