@@ -34,7 +34,7 @@ public:
     {
         setup();
         servo.write(pos);
-        delay(3000);    // this is how long the servo will turn for
+        delay(1000);    // this is how long the servo will turn for
         servo.detach();
     }
 
