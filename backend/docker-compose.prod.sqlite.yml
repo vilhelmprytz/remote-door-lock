@@ -17,6 +17,7 @@ services:
       PORT: "${PORT}"
       DATABASE_TYPE: "sqlite"
       INSECURE: "${INSECURE}"
+      TZ: "${TZ}"
     depends_on:
       - redis
     ports:

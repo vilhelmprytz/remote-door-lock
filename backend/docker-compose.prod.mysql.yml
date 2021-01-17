@@ -9,6 +9,7 @@ services:
       MYSQL_USER: "remote_door_lock"
       MYSQL_PASSWORD: "${MYSQL_PASSWORD}"
       MYSQL_ROOT_PASSWORD: "${MYSQL_PASSWORD}"
+      TZ: "${TZ}"
     volumes:
       - remote-door-lock-mysql:/var/lib/mysql
 
@@ -29,6 +30,7 @@ services:
       OAUTHLIB_INSECURE_TRANSPORT: "${OAUTHLIB_INSECURE_TRANSPORT}"
       PORT: "${PORT}"
       INSECURE: "${INSECURE}"
+      TZ: "${TZ}"
     depends_on:
       - mysql
       - redis
