@@ -25,6 +25,12 @@ Note! The battery in the diagram is not accurate. The servo motor FS5103B recomm
 
 ![Circuit Schematic created with Fritzing](docs/circuit-schematic.jpg)
 
+## Final Project and Video Demonstration
+
+Example setup for the final project. There is also a [YouTube video](https://youtu.be/Ohy4-ShkAiI) demonstrating the project in action!
+
+![Final project](docs/final-project.png)
+
 ## Contributors ✨
 
 Created and written by [Vilhelm Prytz](https://github.com/vilhelmprytz) - [vilhelm@prytznet.se](mailto:vilhelm@prytznet.se).
